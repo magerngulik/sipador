@@ -31,9 +31,9 @@
                                     </button>
                                 </form>
                                 <hr>
-                                <div class="text-center">
+                                <!-- <div class="text-center">
                                     <a class="small" href="<?= base_url('auth/forgotpassword'); ?>">Forgot Password?</a>
-                                </div>
+                                </div> -->
                                 <div class="text-center">
                                     <a class="small" href="<?= base_url('auth/registration'); ?>">Create an Account!</a>
                                 </div>

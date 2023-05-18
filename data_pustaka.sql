@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 10, 2023 at 06:30 PM
+-- Generation Time: May 18, 2023 at 04:04 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 7.4.33
 
@@ -24,148 +24,47 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `buku_absen`
+-- Table structure for table `detail_penyewaan`
 --
 
-CREATE TABLE `buku_absen` (
-  `id_absen` int(11) NOT NULL,
-  `id_siswa` int(11) NOT NULL,
-  `keterangan` varchar(50) NOT NULL,
-  `date_create` date NOT NULL DEFAULT current_timestamp()
+CREATE TABLE `detail_penyewaan` (
+  `id_detail_penyewaan` int(11) NOT NULL,
+  `id_penyewaan` int(11) NOT NULL,
+  `id_produk` int(11) NOT NULL,
+  `jumlah_pinjam` int(11) NOT NULL,
+  `lama_penyewaan` int(11) NOT NULL,
+  `date_create` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `buku_absen`
+-- Dumping data for table `detail_penyewaan`
 --
 
-INSERT INTO `buku_absen` (`id_absen`, `id_siswa`, `keterangan`, `date_create`) VALUES
-(1, 1, 'Membaca buku', '2021-11-20'),
-(2, 1, 'Membaca buku', '2021-11-20'),
-(3, 11, 'Membaca buku', '2021-11-23');
+INSERT INTO `detail_penyewaan` (`id_detail_penyewaan`, `id_penyewaan`, `id_produk`, `jumlah_pinjam`, `lama_penyewaan`, `date_create`) VALUES
+(24, 42, 14, 2, 1, '2023-05-18');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `buku_induk`
+-- Table structure for table `penyewaan`
 --
 
-CREATE TABLE `buku_induk` (
-  `id_buku` int(11) NOT NULL,
-  `no_induk` varchar(25) NOT NULL,
-  `tgl_masuk` date NOT NULL,
-  `jd_buku` varchar(50) NOT NULL,
-  `penulis` varchar(50) NOT NULL,
-  `penerbit` varchar(50) NOT NULL,
-  `tmp_terbit` varchar(25) NOT NULL,
-  `th_terbit` varchar(25) NOT NULL,
-  `ed_cat` varchar(50) NOT NULL,
-  `jml` int(15) NOT NULL,
-  `bhs` varchar(25) NOT NULL,
-  `isbn` varchar(50) NOT NULL,
-  `sumber` varchar(128) NOT NULL,
-  `odc` varchar(25) NOT NULL,
-  `jml_pinjam` int(25) NOT NULL
+CREATE TABLE `penyewaan` (
+  `id_penyewaan` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
+  `pesan` varchar(255) NOT NULL,
+  `tanggal_penyewaan` date NOT NULL,
+  `tanggal_pengembalian` date NOT NULL,
+  `pembayaran` varchar(255) NOT NULL,
+  `status` int(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `buku_induk`
+-- Dumping data for table `penyewaan`
 --
 
-INSERT INTO `buku_induk` (`id_buku`, `no_induk`, `tgl_masuk`, `jd_buku`, `penulis`, `penerbit`, `tmp_terbit`, `th_terbit`, `ed_cat`, `jml`, `bhs`, `isbn`, `sumber`, `odc`, `jml_pinjam`) VALUES
-(2, '0001/PK/0', '2021-10-30', 'Pendidikan Bahasa Indonesia', 'Suherti, dkk', 'Kemendikbud', 'Jakarta', '2000', 'Ke 4', 20, 'indonesia', '125454511', 'sumbangan dari siswa', '371.3', 7),
-(9, '0002/PKN/6', '2021-10-17', 'Seni Bersikap Bodo Amat', 'RIdwan Malik', 'Erlangga', 'Pekanbaru', '2006', 'Ke 4', 50, 'Indonesia', '989898989898', 'Pemberian Siswa', '5555', 17);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `buku_kelas`
---
-
-CREATE TABLE `buku_kelas` (
-  `id_kelas` int(11) NOT NULL,
-  `nm_kelas` varchar(25) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `buku_kelas`
---
-
-INSERT INTO `buku_kelas` (`id_kelas`, `nm_kelas`) VALUES
-(1, 'X IPS 6'),
-(4, 'X IPA 3'),
-(5, 'X IPS 1'),
-(6, 'Guru');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `buku_kembali`
---
-
-CREATE TABLE `buku_kembali` (
-  `no_kembali` int(11) NOT NULL,
-  `no_pinjaman` int(11) NOT NULL,
-  `tgl_kembal` date NOT NULL,
-  `terlambat` int(11) NOT NULL,
-  `jml_kembali` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `buku_kembali`
---
-
-INSERT INTO `buku_kembali` (`no_kembali`, `no_pinjaman`, `tgl_kembal`, `terlambat`, `jml_kembali`) VALUES
-(1, 1, '2021-10-08', 12, 0);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `buku_pinjam`
---
-
-CREATE TABLE `buku_pinjam` (
-  `no_peminjaman` int(11) NOT NULL,
-  `id_buku` int(11) NOT NULL,
-  `id_siswa` int(11) NOT NULL,
-  `jml_pinjaman` int(15) NOT NULL,
-  `date_create` date NOT NULL,
-  `status_pinjaman` int(1) NOT NULL,
-  `jns_pinjam` varchar(15) NOT NULL,
-  `tgl_kembali` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `buku_pinjam`
---
-
-INSERT INTO `buku_pinjam` (`no_peminjaman`, `id_buku`, `id_siswa`, `jml_pinjaman`, `date_create`, `status_pinjaman`, `jns_pinjam`, `tgl_kembali`) VALUES
-(8, 2, 1, 1, '2021-10-19', 0, 'Guru', '2021-11-06'),
-(15, 2, 1, 1, '2021-10-31', 1, 'Guru', '0000-00-00'),
-(16, 9, 1, 1, '2021-10-31', 0, 'Guru', '2011-12-03');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `buku_siswa`
---
-
-CREATE TABLE `buku_siswa` (
-  `id_siswa` int(11) NOT NULL,
-  `no_anggota` varchar(15) NOT NULL,
-  `nm_siswa` varchar(128) NOT NULL,
-  `nisn` varchar(25) NOT NULL,
-  `id_kelas` int(11) NOT NULL,
-  `alamat` varchar(64) NOT NULL,
-  `tanggal_terbit` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `buku_siswa`
---
-
-INSERT INTO `buku_siswa` (`id_siswa`, `no_anggota`, `nm_siswa`, `nisn`, `id_kelas`, `alamat`, `tanggal_terbit`) VALUES
-(1, 'P/001', 'RIdwan Hanifah', '12345678911', 1, 'JL. Lebay Muda2', '2021-10-05'),
-(11, 'P/002', 'zulkarnaen', '1234567', 1, 'jalan terpadu', '2021-11-03');
+INSERT INTO `penyewaan` (`id_penyewaan`, `id`, `pesan`, `tanggal_penyewaan`, `tanggal_pengembalian`, `pembayaran`, `status`) VALUES
+(42, 13, 'Cepat ya', '2023-05-18', '2023-05-18', 'DANA', 3);
 
 -- --------------------------------------------------------
 
@@ -178,18 +77,20 @@ CREATE TABLE `produk` (
   `nama_produk` varchar(255) NOT NULL,
   `foto_produk` varchar(255) NOT NULL,
   `harga` int(11) NOT NULL,
-  `jumlah` int(11) NOT NULL
+  `jumlah` int(11) NOT NULL,
+  `deskripsi` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `produk`
 --
 
-INSERT INTO `produk` (`id_produk`, `nama_produk`, `foto_produk`, `harga`, `jumlah`) VALUES
-(1, 'produk 2', 'hambali_pas_foto.png', 30000, 30),
-(2, 'kompor', 'box.png', 30000, 30),
-(3, 'produk 2', 'profile.png', 30000, 30),
-(4, 'produk 2', 'box.png', 30000, 30);
+INSERT INTO `produk` (`id_produk`, `nama_produk`, `foto_produk`, `harga`, `jumlah`, `deskripsi`) VALUES
+(12, 'Tas Kemping Speed Baru', 'tas_kemping2.jpg', 50000, 100, 'Tas Kemping Untuk Mendaki Gunung - nyaman muat banyak barang dan kuat.   '),
+(13, 'Tas Kemping Speed 2', 'tas_kemping.jpg', 55000, 10, 'Tas Kemping Untuk Mendaki Gunung - Muat sampai 20 kg  '),
+(14, 'Tenda Glamping double layer', 'tenda2.jpg', 100000, 5, 'Tenda Glamping double layer untuk 5-8 orang yang memiliki model seperti rumah kecil dan sangat mudah didirikan dengan frame otomatis. Bahan anti air, windproof dan memiliki sirkulasi udara yang baik. Memiliki 2 kamar tidur dan 1 living room untuk berkumpu'),
+(15, 'Tenda Camping Keluarga', 'tenda_cakra.jpg', 150000, 10, 'Tenda Camping Keluarga dari kolaborasi Hike n Run dan Naturehike dengan nama mengusung tema pewayangan Indonesia yang kami beri nama CAKRA. Tenda Cakra memiliki Vestibule atau Ruang tamu yang luas ditambah dengan model 2 sisi pintu tenda ini dapat di jadi'),
+(16, 'Kompor gas portabel', 'kompor_portable.jpg', 50000, 50, 'Kompor gas portabel dengan 1 tungku yang mudah untuk di bawa kemana - mana. Dilengkapi dengan perangkat pengaman katup ganda yang mencegah kebocoran gas serta menjaga dari tekanan yang berlebih. Harga Diatas sudah termasuk 3 kaleng gas & shabu2');
 
 -- --------------------------------------------------------
 
@@ -205,19 +106,19 @@ CREATE TABLE `user` (
   `password` varchar(256) NOT NULL,
   `role_id` int(11) NOT NULL,
   `is_active` int(1) NOT NULL,
-  `date_created` int(11) NOT NULL
+  `date_created` int(11) NOT NULL,
+  `alamat` varchar(255) NOT NULL,
+  `notelp` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `name`, `email`, `image`, `password`, `role_id`, `is_active`, `date_created`) VALUES
-(5, 'Sandhika Galih', 'sandhikagalih@unpas.ac.id', 'profile1.jpg', '$2y$10$nXnrqGQTjpvg58OtOB/N.evYQjVlz7KIW37oUSQSQ2EgNMD0Dgrzq', 1, 1, 1552120289),
-(6, 'Doddy Ferdiansyah', 'doddy@gmail.com', 'profile.jpg', '$2y$10$FhGzXwwTWLN/yonJpDLR0.nKoeWlKWBoRG9bsk0jOAgbJ007XzeFO', 2, 1, 1552285263),
-(11, 'Sandhika Galih', 'sandhikagalih@gmail.com', 'default.jpg', '$2y$10$0QYEK1pB2L.Rdo.ZQsJO5eeTSpdzT7PvHaEwsuEyGSs0J1Qf5BoSq', 2, 1, 1553151354),
-(12, 'zulkarnaen', 'zulkarnaim70@gmail.com', 'default.jpg', '$2y$10$OZ6Mb2gI.VD2JaIiLmtpu.b.XHr8UtHuYt7BMhWCjHnEAlVzqjr8q', 1, 1, 1633660177),
-(13, 'member', 'member@member.com', 'default.jpg', '$2y$10$OZ6Mb2gI.VD2JaIiLmtpu.b.XHr8UtHuYt7BMhWCjHnEAlVzqjr8q', 3, 1, 1633660177);
+INSERT INTO `user` (`id`, `name`, `email`, `image`, `password`, `role_id`, `is_active`, `date_created`, `alamat`, `notelp`) VALUES
+(12, 'zulkarnaen', 'zulkarnaim70@gmail.com', 'default.jpg', '$2y$10$OZ6Mb2gI.VD2JaIiLmtpu.b.XHr8UtHuYt7BMhWCjHnEAlVzqjr8q', 1, 1, 1633660177, 'Jl. Bandung', '088888888'),
+(13, 'member', 'member@member.com', 'default.jpg', '$2y$10$/qKN5guesYsL/HDSgF/Hv.oGGCNKbLqxCEXc3nFN3AR5arIAC9i5C', 1, 1, 1633660177, 'Jl. Bandung', '088888888'),
+(16, 'akun1', 'akun1@gmail.com', 'default.jpg', '$2y$10$I5geD6Q7vOmEjSgeMwp4IOYFPTyvdOfNabk.EIIr9DtIzRBlapkMq', 3, 1, 1684374868, 'Jalan Lelebai Panjang', '08111111111');
 
 -- --------------------------------------------------------
 
@@ -238,7 +139,6 @@ CREATE TABLE `user_access_menu` (
 INSERT INTO `user_access_menu` (`id`, `role_id`, `menu_id`) VALUES
 (1, 1, 1),
 (3, 2, 2),
-(7, 1, 3),
 (8, 1, 2),
 (10, 1, 5),
 (11, 1, 6),
@@ -265,8 +165,6 @@ INSERT INTO `user_menu` (`id`, `menu`) VALUES
 (1, 'Admin'),
 (2, 'User'),
 (3, 'Menu'),
-(5, 'Anggota'),
-(6, 'Buku'),
 (7, 'Produk');
 
 -- --------------------------------------------------------
@@ -321,7 +219,8 @@ INSERT INTO `user_sub_menu` (`id`, `menu_id`, `title`, `url`, `icon`, `is_active
 (11, 6, 'Data Buku', 'buku', 'fas fa-book', 1),
 (12, 6, 'Data Pinjaman', 'buku/pinjaman', 'fas fa-clipboard-list', 1),
 (13, 5, 'Data Absen', 'anggota/absenSiswa', 'fas fa-book', 1),
-(14, 7, 'Menu Produk', 'produk', 'fas fa-book', 1);
+(14, 7, 'Menu Produk', 'produk', 'fas fa-book', 1),
+(15, 7, 'Menu Penyewaan', 'produk/penyewaan', 'fas fa-book', 1);
 
 -- --------------------------------------------------------
 
@@ -348,41 +247,16 @@ INSERT INTO `user_token` (`id`, `email`, `token`, `date_created`) VALUES
 --
 
 --
--- Indexes for table `buku_absen`
+-- Indexes for table `detail_penyewaan`
 --
-ALTER TABLE `buku_absen`
-  ADD PRIMARY KEY (`id_absen`);
+ALTER TABLE `detail_penyewaan`
+  ADD PRIMARY KEY (`id_detail_penyewaan`);
 
 --
--- Indexes for table `buku_induk`
+-- Indexes for table `penyewaan`
 --
-ALTER TABLE `buku_induk`
-  ADD PRIMARY KEY (`id_buku`);
-
---
--- Indexes for table `buku_kelas`
---
-ALTER TABLE `buku_kelas`
-  ADD PRIMARY KEY (`id_kelas`);
-
---
--- Indexes for table `buku_kembali`
---
-ALTER TABLE `buku_kembali`
-  ADD PRIMARY KEY (`no_kembali`);
-
---
--- Indexes for table `buku_pinjam`
---
-ALTER TABLE `buku_pinjam`
-  ADD PRIMARY KEY (`no_peminjaman`);
-
---
--- Indexes for table `buku_siswa`
---
-ALTER TABLE `buku_siswa`
-  ADD PRIMARY KEY (`id_siswa`),
-  ADD UNIQUE KEY `no_anggota` (`no_anggota`);
+ALTER TABLE `penyewaan`
+  ADD PRIMARY KEY (`id_penyewaan`);
 
 --
 -- Indexes for table `produk`
@@ -431,52 +305,28 @@ ALTER TABLE `user_token`
 --
 
 --
--- AUTO_INCREMENT for table `buku_absen`
+-- AUTO_INCREMENT for table `detail_penyewaan`
 --
-ALTER TABLE `buku_absen`
-  MODIFY `id_absen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+ALTER TABLE `detail_penyewaan`
+  MODIFY `id_detail_penyewaan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
--- AUTO_INCREMENT for table `buku_induk`
+-- AUTO_INCREMENT for table `penyewaan`
 --
-ALTER TABLE `buku_induk`
-  MODIFY `id_buku` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
-
---
--- AUTO_INCREMENT for table `buku_kelas`
---
-ALTER TABLE `buku_kelas`
-  MODIFY `id_kelas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
-
---
--- AUTO_INCREMENT for table `buku_kembali`
---
-ALTER TABLE `buku_kembali`
-  MODIFY `no_kembali` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
-
---
--- AUTO_INCREMENT for table `buku_pinjam`
---
-ALTER TABLE `buku_pinjam`
-  MODIFY `no_peminjaman` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
-
---
--- AUTO_INCREMENT for table `buku_siswa`
---
-ALTER TABLE `buku_siswa`
-  MODIFY `id_siswa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+ALTER TABLE `penyewaan`
+  MODIFY `id_penyewaan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `produk`
 --
 ALTER TABLE `produk`
-  MODIFY `id_produk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_produk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `user_access_menu`
@@ -500,7 +350,7 @@ ALTER TABLE `user_role`
 -- AUTO_INCREMENT for table `user_sub_menu`
 --
 ALTER TABLE `user_sub_menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `user_token`
