@@ -5,10 +5,10 @@ Untu cara download silahkan mengikuti gambar di bawah ini:
 
 ## Cara setup database
 - Buka mysql di localhost phpmyadmin di browser sesuaikan dengan port yang di gunakan
-![App Screenshot](https://github.com/magerngulik/coffee-shops-santuy/blob/main/assets/image/thumb.png)
+![App Screenshot](https://raw.githubusercontent.com/magerngulik/sipador/main/assets/presentasi/1.png)
 - Buat database baru
-![App Screenshot](https://github.com/magerngulik/coffee-shops-santuy/blob/main/assets/image/menu1.png)
+![App Screenshot](https://raw.githubusercontent.com/magerngulik/sipador/main/assets/presentasi/2.png)
 - Klik menu import
 - pilih file data_pustaka.sql
-![App Screenshot](https://github.com/magerngulik/coffee-shops-santuy/blob/main/assets/image/menu2.png)
+![App Screenshot](https://raw.githubusercontent.com/magerngulik/sipador/main/assets/presentasi/3.png)
 
