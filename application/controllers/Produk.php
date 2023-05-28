@@ -267,21 +267,11 @@ class Produk extends CI_Controller
          $pdf->Cell(30, 8, 'Pengembalian', '1', '0', 'C', true);
          $pdf->Cell(60, 8, 'Alamat', '1', '0', 'C', true);
          $pdf->Cell(30, 8, 'Nama', '1', '0', 'C', true);
-         $pdf->Cell(30, 8, 'status', '1', '0', 'C', true);
          $pdf->Cell(30, 8, 'Lama Pinjaman', '1', '1', 'C', true);
          $totalstok = 0;
          $totalaset = 0;
         foreach ($data['penyewaan']  as $row) { 
-            $status = $row['status'];
-            $setStatus;
-            if ($status == 1) {
-                $setStatus = "Diproses";
-            }elseif (status == 2 ) {
-                $setStatus = "Di Kirim";
-            }else {
-                $setStatus = "Selesai";
-            }
-
+          
              $lama_pinjam = $row['lama_pinjaman'] * 7;
              $pdf->SetFont('Arial', 'B', 8);
              $pdf->SetTextColor(0, 0, 0);
@@ -291,7 +281,7 @@ class Produk extends CI_Controller
              $pdf->Cell(30, 6, $row['tanggal_pengembalian'], '1', '0', 'C');
              $pdf->Cell(60, 6, $row['alamat_pengiriman'], '1', '0', 'C');
              $pdf->Cell(30, 6, $row['name'], '1', '0', 'C');
-             $pdf->Cell(30, 6, $setStatus, '1', '0', 'C');
+  
              $pdf->Cell(30, 6, $lama_pinjam , '1', '1', 'C');
  
         }
