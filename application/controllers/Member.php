@@ -122,33 +122,65 @@ class Member extends CI_Controller
         $data['title'] = 'Detail History';
         $data['tag'] = '';
         $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
+        $data['penyewaan'] = $this->db->get_where('penyewaan', ['id_penyewaan' => $id])->row_array();
         $data['menu'] = $this->db->get('user_menu')->result_array();
         $data['produk'] = $this->db->get('produk')->result_array();
         $data['history'] = $this->produk->getSingleHistory($id);
         $data['detail'] = $this->produk->getDetailHistory($id);
-        $this->load->view('member/header', $data);
-        $this->load->view('member/navbar_member', $data);
-        $this->load->view('member/user_detail_history', $data);
-        $this->load->view('member/footer');
+
+        $data['id'] = $id;
+        $this->form_validation->set_rules('harga', 'Nama Pengirim', 'required',array(
+            'required' => 'Nama Pengirim wajib di isi'));
+        if ($this->form_validation->run() == false) {
+            $this->load->view('member/header', $data);
+            $this->load->view('member/navbar_member', $data);
+            $this->load->view('member/user_detail_history', $data);
+            $this->load->view('templates/footer');
+        } else {
+            $upload_image = $_FILES['image']['name'];
+            if ($upload_image) {
+                $config['allowed_types'] = 'gif|jpg|png';
+                $config['max_size']      = '2048';
+                $config['upload_path'] = './assets/img/bukti/';
+
+                $this->load->library('upload', $config);
+
+                if ($this->upload->do_upload('image')) {
+                    $old_image = $data['penyewaan']['bukti_pembayaran'];
+                    if ($old_image != 'default.jpg') {
+                        unlink(FCPATH . 'assets/img/bukti/' . $old_image);
+                    }
+                    $new_image = $this->upload->data('file_name');
+                    $this->db->set('bukti_pembayaran', $new_image);
+                } else {
+                    echo $this->upload->dispay_errors();
+                }
+            }
+            $this->db->where('id_penyewaan',$id);
+            $this->db->update('penyewaan');
+            $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Bukti pembayaran berhasil di tambahkan!</div>');
+            redirect('member/history');
+        }
     }
 
 
 
     public function card()
     {
+        $this->load->model('Produk_model', 'produk');
         $data['title'] = 'Menu Member';
         $data['tag'] = 'card';
         $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
         $data['menu'] = $this->db->get('user_menu')->result_array();
         $data['produk'] = $this->db->get('produk')->result_array();
         $data['cart'] = $this->cart->contents(); 
-        $this->load->model('Produk_model', 'produk');
+
         $this->form_validation->set_rules('pesan', 'Pesan', 'required',array(
             'required' => 'Pesan harus di isi.'));
         $this->form_validation->set_rules('alamat', 'Alamat', 'required',array(
             'required' => 'Alamat harus di isi.'));        
         $this->form_validation->set_rules('tanggal', 'Tanggal', 'required',array(
-                    'required' => 'Tanggal harus di isi.'));           
+                    'required' => 'Lama pinjaman harus di isi.'));           
           
         if ($this->form_validation->run() == false) { 
             $this->load->view('member/header', $data);
@@ -157,21 +189,22 @@ class Member extends CI_Controller
             $this->load->view('member/footer');
         }else{       
            $user = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
-
            $bayar = $this->input->post('pembayaran');
-           
-         
+           $tanggal = date('Y-m-d');
+           $jumlahHari = $this->input->post('tanggal');
+           $jumlahHari = $jumlahHari*7;
+
+           $tanggalBaru = date('Y-m-d', strtotime($tanggal . ' + ' . $jumlahHari . ' days'));
            $data = [
                'id' => $user['id'], 
                'pesan' => $this->input->post('pesan'),
                'tanggal_penyewaan' => date('Y-m-d'),
-               'tanggal_pengembalian' => $this->input->post('tanggal'),
+               'tanggal_pengembalian' => $tanggalBaru,
                'status' => 1,
+               'alamat' => $this->input->post('alamat'),
+               'lama_pinjaman' => $this->input->post('tanggal')
            ];
-
            $this->session->set_userdata('payment', $data);
-
-    
             redirect('member/payment');                 
         }
     }
@@ -194,8 +227,6 @@ class Member extends CI_Controller
         $bulan = floor(($selisih - $tahun * 365*60*60*24) / (30*60*60*24));
         $hari = floor(($selisih - $tahun * 365*60*60*24 - $bulan*30*60*60*24) / (60*60*24)); 
         $data['hari'] = $hari;
-        
-        
         $this->form_validation->set_rules('pembayaran', 'pembayaran', 'required',array(
                     'required' => 'Pembayaran harus di isi.'));              
         if ($this->form_validation->run() == false) { 
@@ -204,7 +235,6 @@ class Member extends CI_Controller
             $this->load->view('member/user_payment', $data);
             $this->load->view('member/footer');
         }else{       
-
             $pembayaran;
             $bayar =$this->input->post('pembayaran');
             if ($bayar ==1) {
@@ -214,7 +244,7 @@ class Member extends CI_Controller
              $pembayaran = "DANA";
             
             }elseif ($bayar ==3) {
-             $pembayaran = "DANA";
+             $pembayaran = "OVO";
             }
             else {
              $pembayaran = "Transfer Bank";
@@ -227,29 +257,75 @@ class Member extends CI_Controller
                 'tanggal_pengembalian' => $payment['tanggal_pengembalian'],
                 'pembayaran'=> $pembayaran, 
                 'status' => 1,
+                'bukti_pembayaran' => "default.png",
+                'alamat_pengiriman' => $payment['alamat'],
+                'lama_pinjaman' => $payment['lama_pinjaman'],
+                
             ];
             $this->db->insert('penyewaan', $data);
             $last_data = $this->produk->getLastData();
             $cart_data = $this->cart->contents(); 
-            //cek kalau hari nya 0 di anggap 1 hari
+            $this->session->set_userdata('pembayaran', $data);
             if ($hari ==0) {
                 $hari =1;
             }
-           foreach ($cart_data as $c) {
-             $detailPenyewaan = [
+            $subTotal=0;
+            $total = 0;
+
+
+            foreach ($cart_data as $c) {
+
+            $detailPenyewaan = [
                  "id_penyewaan" => $last_data['id_penyewaan'],
                  "id_produk" => $c['id'],
                  "date_create" => date('Y/m/d'),
                  "jumlah_pinjam" => $c['qty'],
                  "lama_penyewaan" => $hari          
-                ];
-                
+            ];
+            $subTotal = ($hari/7) * $c['qty'] * $c['price'];
+            $total = $subTotal + $total;
             $this->db->insert('detail_penyewaan', $detailPenyewaan);
             };
+            $this->session->set_userdata('total_payment', $total);
             $this->cart->destroy();   
-            $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Pesanan berhasil silahkan check riwayat!</div>');
-            redirect('member/history');  
+            redirect('member/detailPayment');  
         }
+    }
+
+   
+    
+    public function detailPayment(){
+        $data['title'] = 'Payment Methi';
+        $data['tag'] = 'card';
+        $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
+        $data['menu'] = $this->db->get('user_menu')->result_array();
+        $data['produk'] = $this->db->get('produk')->result_array();
+        $payment = $this->session->userdata('pembayaran');
+        $total_payment = $this->session->userdata('total_payment');
+        $rupiah = "Rp " . number_format($total_payment,2,',','.');
+        $message ='';
+        switch ($payment['pembayaran']) {
+            case 'COD':
+                $message = "Total Pembayaran anda sebesar $rupiah, Pembayaran di lakukan secara COD,  Harap siapkan uang pas ketika kurir datang";
+                break;
+            
+            case 'DANA':
+                $message = "Total Pembayaran anda sebesar $rupiah Pembayaran di lakukan secara Dana, Harap tranfer ke nomor 08xxxxxxxx12 lalu kirim bukti pembayaran pada menu riwayat";
+                break;
+
+            case 'OVO':
+                $message = "Total Pembayaran anda sebesar $rupiah Pembayaran di lakukan secara OVO, Harap tranfer ke nomor 08xxxxxxxx12 lalu kirim bukti pembayaran pada menu riwayat";
+                break;
+                
+            case 'Transfer Bank':
+                $message = "Total Pembayaran anda sebesar $rupiah Pembayaran di lakukan secara Tranferbank, Harap tranfer ke rekening BRI 07991018321321 Atas Nama Samsudin lalu kirim bukti pembayaran pada menu riwayat";
+                break;
+        }
+        $data['message'] = $message;
+        $this->load->view('member/header', $data);
+        $this->load->view('member/navbar_member', $data);
+        $this->load->view('member/user_detail_payment', $data);
+        $this->load->view('member/footer');
     }
 
 

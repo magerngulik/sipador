@@ -65,4 +65,84 @@ class Menu extends CI_Controller
             redirect('menu/submenu');
         }
     }
+
+    public function editsubmenu($id){
+        $this->load->model('Menu_model', 'menu');
+        $data['title'] = 'Edit Sub Menu';
+        $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
+        $data['menu'] = $this->db->get('user_menu')->result_array();
+        $data['subMenu'] = $this->menu->getMenuById($id);
+        
+        $this->form_validation->set_rules('title', 'Title Menu siswa', 'required');
+        $this->form_validation->set_rules('menu_id', 'Jenis Menu', 'required');
+        $this->form_validation->set_rules('url', 'Url Menu', 'required');
+        $this->form_validation->set_rules('icon', 'Icon Menu', 'required');
+        if ($this->form_validation->run() == false) {
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/sidebar', $data);
+            $this->load->view('templates/topbar', $data);
+            $this->load->view('menu/editsubmenu.php', $data);
+            $this->load->view('templates/footer');
+        } else {
+            $data = [
+                    'title' => $this->input->post('title'),
+                    'menu_id' => $this->input->post('menu_id'),
+                    'url' => $this->input->post('url'),
+                    'icon' => $this->input->post('icon'),
+                ];
+            $this->db->where('id',$id);
+            $this->db->update('user_sub_menu',$data);
+            
+            $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Data Menu Berhasil Di Ubah!</div>');
+            redirect('menu/submenu');
+
+        }
+    }
+
+    public function editmenu($id){
+        $this->load->model('Menu_model', 'menu');
+        $data['title'] = 'Edit Menu';
+        $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
+        $data['menu'] = $this->db->get('user_menu')->result_array();
+        $data['subMenu'] = $this->menu->getMenuId($id);
+        
+        $this->form_validation->set_rules('nm_menu', 'Nama Menu', 'required');
+        if ($this->form_validation->run() == false) {
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/sidebar', $data);
+            $this->load->view('templates/topbar', $data);
+            $this->load->view('menu/editmenu.php', $data);
+            $this->load->view('templates/footer');
+        } else {
+            $data = [
+                    'menu' => $this->input->post('nm_menu'),
+                ];
+            $this->db->where('id',$id);
+            $this->db->update('user_menu',$data);
+            $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Data Menu Berhasil Di Ubah!</div>');
+            redirect('menu');
+        }
+    }
+
+     
+    public function hapusdata($id){
+        $tabelname = "user_sub_menu";
+        $tabelId = "id";
+        $this->load->model('Menu_Model','menu');
+        $this->menu->deleteData($id,$tabelname,$tabelId);
+        $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Data berhasil di hapus!</div>');
+        redirect('menu/submenu');
+    }
+
+    public function hapusdatamenu($id){
+        $tabelname = "user_menu";
+        $tabelId = "id";
+        $this->load->model('Menu_Model','menu');
+        $this->menu->deleteData($id,$tabelname,$tabelId);
+        $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Data berhasil di hapus!</div>');
+        redirect('menu/');
+    }
+
+
+    
 }

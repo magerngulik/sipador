@@ -59,15 +59,20 @@
               
             <form action="" method="post">
 
-                    
-              <div class="form-group row">
-                <div class="col-lg">
-                  <label for="tglKembali" class="form-label mx-3">Tanggal Kembali</label>
-                  <input type="date" id="tanggal" name="tanggal">
+         
+              <div class="row">
+                  <div class="col-lg-3">
+                    <label for="alamatLengkap" class="form-label">Lama Pinjaman</label>
+                  </div>
+                  <div class="col-lg-2">
+                    <input type="text" class="form-control" id="tanggal" name="tanggal">
+                  </div>
+                  <div class="col-lg-2">
+                    <p class="form-label">/Minggu</p>
+                  </div>
                   <?= form_error('tanggal', '<small class="text-danger pl-3">', '</small>'); ?>
-
                 </div>
-              </div>
+
               <div class="mb-3 mt-3">
                 <label for="alamatLengkap" class="form-label">Alamat Lengkap</label>
                 <input type="text" class="form-control" id="alamat" name="alamat" value="<?=$user['alamat']?>">

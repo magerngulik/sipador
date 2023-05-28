@@ -72,7 +72,7 @@
 
                 </tr>
                 <?php $i++; ?>
-                <?php $subTotal = $hari * $m['qty'] * $m['price']; ?>
+                <?php $subTotal = ($hari/7) * $m['qty'] * $m['price']; ?>
                 <?php $total = $subTotal + $total; ?>
                 <?php endforeach;?>
                 <tr>

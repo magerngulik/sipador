@@ -47,6 +47,17 @@ class Produk_model extends CI_Model
         return $this->db->get()->result_array();
     }
 
+    public function getAllDetailPenyewaan(){
+        $this->db->select('*');
+        $this->db->from('detail_penyewaan a');
+        $this->db->join('penyewaan b', 'a.id_penyewaan=b.id_penyewaan', 'left'); 
+        $this->db->join('user c', 'c.id=b.id', 'left'); 
+        $this->db->join('produk d', 'd.id_produk=a.id_produk', 'left'); 
+        return $this->db->get()->result_array();
+    }
+
+
+
     public function getSinglePenyewaan($id){
         $this->db->select('*');
         $this->db->from('penyewaan a');

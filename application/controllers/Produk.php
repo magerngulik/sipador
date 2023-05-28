@@ -7,6 +7,7 @@ class Produk extends CI_Controller
     {
         parent::__construct();
         is_logged_in();
+        include_once APPPATH . '/third_party/fpdf/fpdf.php';
    
     }
 
@@ -118,6 +119,9 @@ class Produk extends CI_Controller
         $this->form_validation->set_rules('deskripsi', 'Deskripsi', 'required',array(
             'required' => 'Deskripsi wajib di isi'));
 
+
+         
+
         if ($this->form_validation->run() == false) {
             $this->load->view('templates/header', $data);
             $this->load->view('templates/sidebar', $data);
@@ -222,13 +226,11 @@ class Produk extends CI_Controller
             'required' => 'Status wajib di isi'));
 
         if ($this->form_validation->run() == false) {
-           
             $this->load->view('templates/header', $data);
             $this->load->view('templates/sidebar', $data);
             $this->load->view('templates/topbar', $data);
             $this->load->view('produk/detail_penyewaan', $data);
             $this->load->view('templates/footer');
-
         } else {
             $this->db->set(['status' => $this->input->post('status'),]);
             $this->db->where('id_penyewaan',$id);
@@ -236,9 +238,75 @@ class Produk extends CI_Controller
             $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Produk berhasil di update!</div>');
             redirect('produk/penyewaan');
         }
+    }
 
+    public function printPenyewaan(){
+         // $html = $this->load->view('laporan/print_barang', $data,TRUE);
 
+         $this->load->model('Produk_model', 'produk');
+         $data['title'] = 'Menu Penyewaan';
+         $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
+         $data['menu'] = $this->db->get('user_menu')->result_array();
+         $data['produk'] = $this->db->get('produk')->result_array();
+         $data['penyewaan'] = $this->produk->getAllDetailPenyewaan();
 
+         $pdf = new FPDF('p', 'mm', 'A4');
+         $pdf->SetFont('Arial', 'B', 8);
+         $pdf->AddPage('L');
+         $pdf->Cell(191, 1, 'Laporan Penyewaan', '0', '1', 'D');
+         $pdf->Cell(191, 7, 'Sipandor', '0', '1', 'D');
+         $pdf->Cell(191, 7, '', '0', '1', 'C');
+         $pdf->SetFont('Arial', 'B', 11);
+         $pdf->Cell(30, 8, 'Nama Kota, ', '0', '0', 'B');
+         $pdf->Cell(30, 8, date('d-M-Y'), '0', '1', 'L');
+         $pdf->SetTextColor(255, 255, 255);
+         $pdf->setFillColor(100, 149, 237);
+         $pdf->Cell(30, 8, 'ID Penyewaan', '1', '0', 'C', true);
+         $pdf->Cell(44, 8, 'Pesan', '1', '0', 'C', true);
+         $pdf->Cell(30, 8, 'Penyewaan', '1', '0', 'C', true);
+         $pdf->Cell(30, 8, 'Pengembalian', '1', '0', 'C', true);
+         $pdf->Cell(60, 8, 'Alamat', '1', '0', 'C', true);
+         $pdf->Cell(30, 8, 'Nama', '1', '0', 'C', true);
+         $pdf->Cell(30, 8, 'status', '1', '0', 'C', true);
+         $pdf->Cell(30, 8, 'Lama Pinjaman', '1', '1', 'C', true);
+         $totalstok = 0;
+         $totalaset = 0;
+        foreach ($data['penyewaan']  as $row) { 
+            $status = $row['status'];
+            $setStatus;
+            if ($status == 1) {
+                $setStatus = "Diproses";
+            }elseif (status == 2 ) {
+                $setStatus = "Di Kirim";
+            }else {
+                $setStatus = "Selesai";
+            }
+
+             $lama_pinjam = $row['lama_pinjaman'] * 7;
+             $pdf->SetFont('Arial', 'B', 8);
+             $pdf->SetTextColor(0, 0, 0);
+             $pdf->Cell(30, 6, $row['id_penyewaan'], '1', '0', 'C');
+             $pdf->Cell(44, 6, $row['nama_produk'], '1', '0', 'C');
+             $pdf->Cell(30, 6, $row['tanggal_penyewaan'], '1', '0', 'C');
+             $pdf->Cell(30, 6, $row['tanggal_pengembalian'], '1', '0', 'C');
+             $pdf->Cell(60, 6, $row['alamat_pengiriman'], '1', '0', 'C');
+             $pdf->Cell(30, 6, $row['name'], '1', '0', 'C');
+             $pdf->Cell(30, 6, $setStatus, '1', '0', 'C');
+             $pdf->Cell(30, 6, $lama_pinjam , '1', '1', 'C');
+ 
+        }
+         $pdf->Cell(15, 8, '', '0', '1', 'C');
+         $pdf->Cell(15, 8, 'Total Stok ', '0', '0', 'C');
+         $pdf->SetFont('Arial', 'B', 12);
+         $pdf->SetTextColor(255, 255, 255);
+        //  $pdf->Cell(35, 8, $totalstok, '0', '1', 'C', true);
+         $pdf->SetFont('Arial', 'B', 8);
+         $pdf->SetTextColor(0, 0, 0);
+         $pdf->Cell(15, 8, 'Total Aset ', '0', '0', 'C');
+         $pdf->SetFont('Arial', 'B', 12);
+         $pdf->SetTextColor(255, 255, 255);
+        //  $pdf->Cell(35, 8, "Rp $totalaset", '0', '1', 'C', true);
+         $pdf->Output();
     }
 
    

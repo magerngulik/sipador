@@ -12,6 +12,22 @@ class Menu_model extends CI_Model
         return $this->db->query($query)->result_array();
     }
 
+    public function getMenuById($id){
+        $this->db->select('*');
+        $this->db->from('user_sub_menu a'); 
+        $this->db->join('user_menu b', 'a.menu_id=b.id', 'left');
+        $this->db->where('a.id',$id);
+        return $this->db->get()->row_array();
+    }
+        
+    public function getMenuId($id){
+        $this->db->select('*');
+        $this->db->from('user_menu'); 
+        $this->db->where('id',$id);
+        return $this->db->get()->row_array();
+    }
+
+
 public function getAnggota(){     
     $queryMenu = "SELECT * FROM `buku_siswa` JOIN buku_kelas ON buku_siswa.id_kelas = buku_kelas.id_kelas;";
     return $this->db->query($queryMenu)->result_array();

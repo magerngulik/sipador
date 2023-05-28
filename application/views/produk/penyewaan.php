@@ -3,9 +3,7 @@
 
     <!-- Page Heading -->
     <h1 class="h3 mb-4 text-gray-800"><?= $title; ?></h1>
-
-
-
+    <a class="btn btn-success my-3" href="<?= base_url('produk/printPenyewaan') ?>"> Print Laporan</a>
     <div class="row">
         <div class="col-lg">
             <?= form_error('menu', '<div class="alert alert-danger" role="alert">', '</div>'); ?>
@@ -22,6 +20,7 @@
                         <th scope="col">Tanggal Penyewaan</th>
                         <th scope="col">Tanggal Pengembalian</th>
                         <th scope="col">Pembayaran</th>
+                        <th scope="col">Bukti Pembayaran</th>
                         <th scope="col">Status</th>
                         <th scope="col">Action</th>
                     </tr>
@@ -43,14 +42,14 @@
                         $status = 'Sampai';
                     }
                     ?>
-                    
                         <th scope="row"><?= $i; ?></th>
                         <td><?= $m['name']; ?></td>
-                        <td><?= $m['alamat']; ?></td>
+                        <td><?= $m['alamat_pengiriman']; ?></td>
                         <td><?= $m['pesan']; ?></td>
                         <td><?= $m['tanggal_penyewaan']; ?></td>
                         <td><?= $m['tanggal_pengembalian']; ?></td>
                         <td><?= $m['pembayaran']; ?></td>
+                        <td> <img src="<?= base_url('assets/img/bukti/') . $m['bukti_pembayaran']; ?>" class="img-thumbnail" alt="produk" style="max-height: 100px;"></td>
                         <td> <span class="badge badge-<?=$color?> justify-content-end"><?=$status?></span></td>
                         <td>
                             <a href="<?= base_url('produk/detailPenyewaan/').$m['id_penyewaan']?>" class="badge badge-success">lihat</a>
