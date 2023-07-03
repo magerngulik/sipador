@@ -98,7 +98,7 @@
                 </tr>
                 <?php $i++?>
 
-                <?php $subTotal = $hari * $m['jumlah_pinjam'] * $m['harga']; ?>
+                <?php $subTotal = ($hari/7) * $m['jumlah_pinjam'] * $m['harga']; ?>
                 <?php $total = $subTotal + $total; ?>
                 <?php endforeach; ?>
                      

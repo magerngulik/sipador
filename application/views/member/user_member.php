@@ -32,8 +32,8 @@
                             <div class="col-sm-10">
                                 <div class="row">
                                     <div class="col-sm">
-                                        <div class="custom-file">
-                                            <input type="file" class="custom-file-input" id="image" name="image">
+                                        <div class="custom-file" >
+                                            <input type="file" class="margin-top: 10px; padding: 5px;" id="image" name="image">
                                         </div>
                                     </div>
                                 </div>
